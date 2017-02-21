@@ -48,31 +48,37 @@ class network:
 			a_values.append(self.sigmoid(z))
 
 		""" error calculation """
-		err = np.multiply(y - a_values[-1], self.sigmoid_prime(z_values[-1]))
+		err = np.multiply(a_values[-1] - y, self.sigmoid_prime(z_values[-1]))
 		delta_biases[-1] = err
-		delta_weights[-1] = np.dot(a_values[-2], err.transpose())
+		delta_weights[-1] = np.dot(err, a_values[-2].transpose())
 
 		""" back pass with error calculations """
-		for i in range(len(z_values) - 1):
-			err = np.multiply(np.dot(self.weights[-i-1].transpose(), err), \
-					self.sigmoid_prime(z_values[-i-2]))
+		for i in range(1, len(z_values)):
+			err = np.multiply(np.dot(self.weights[-i].transpose(), err), \
+					self.sigmoid_prime(z_values[-i-1]))
 
-			delta_biases[-i-2] = err
-			delta_weights[-i-2] = np.dot(a_values[-i-3], err.transpose())
+			delta_biases[-i-1] = err
+			delta_weights[-i-1] = np.dot(err, a_values[-i-2].transpose())
 
 		return delta_biases, delta_weights
 
-	def train(self, training_data, learning_rate):
+	def train(self, training_data, learning_rate, set_size, num_cycles):
 		""" cycle through training data then update network """
-		d_w_total = [np.zeros(x.shape) for x in self.weights]
-		d_b_total = [np.zeros(x.shape) for x in self.biases]
+		num_sets = int(len(training_data) / set_size)
 
-		for x, y in training_data:
-			d_b, d_w = self.backprop(x, y)
-			d_w_total = [old + new.transpose() for old, new in zip(d_w_total, d_w)]
-			d_b_total = [old + new for old, new in zip(d_b_total, d_b)]
+		for i in range(num_cycles):
+			for j in range(num_sets):
+				data_set = training_data[j * set_size: (j + 1) * set_size]
+				d_w_total = [np.zeros(x.shape) for x in self.weights]
+				d_b_total = [np.zeros(x.shape) for x in self.biases]
 
-		self.weights = [old - learning_rate/len(training_data) * total
-							for old, total in zip(self.weights, d_w_total)]
-		self.biases = [old - learning_rate/len(training_data) * total
-							for old, total in zip(self.biases, d_b_total)]
+				for x, y in data_set:
+					d_b, d_w = self.backprop(x, y)
+					d_w_total = [old + new for old, new in zip(d_w_total, d_w)]
+					d_b_total = [old + new for old, new in zip(d_b_total, d_b)]
+
+				self.weights = [old - np.multiply(learning_rate/len(data_set), total)
+								for old, total in zip(self.weights, d_w_total)]
+				self.biases = [old - np.multiply(learning_rate/len(data_set), total)
+								for old, total in zip(self.biases, d_b_total)]
+			np.random.shuffle(training_data)

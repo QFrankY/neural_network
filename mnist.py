@@ -52,7 +52,7 @@ class mnist(data):
 
 		for i in range(len(test_set)):
 			x, y = test_set[i]
-			if y == np.argmax(outputs[i]):
+			if np.argmax(y) == np.argmax(outputs[i]):
 				num_valid = num_valid + 1
 
 		return num_valid / len(test_set)
