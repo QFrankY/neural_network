@@ -13,14 +13,12 @@ class network:
 		self.weights = [np.random.rand(x, y) for x, y in 
 								zip(network_layers[1:], network_layers[0:-1])]
 
-	# Private functions
-	def __sigmoid (self, z):
+	def sigmoid (z):
 		return 1 / (1 + np.exp(-z))
 
-	def __sigmoid_prime (self, z):
-		return np.multiply(self.__sigmoid(z), (1 - self.__sigmoid(z)))
+	def sigmoid_prime (z):
+		return np.multiply(sigmoid(z), (1 - sigmoid(z)))
 
-	# Public functions
 	def export(self):
 		""" returns network variables """
 		return self.layers, self.biases, self.weights
@@ -30,7 +28,7 @@ class network:
 		activation = x
 		for i in range(len(self.layers) - 1):
 			z = np.dot(self.weights[i], activation)+ self.biases[i]
-			activation = self.__sigmoid(z)
+			activation = `sigmoid(z)
 		return activation
 
 	def backprop(self, x, y):
@@ -45,17 +43,17 @@ class network:
 		for i in range(len(self.layers) - 1):
 			z = np.dot(self.weights[i], a_values[i]) + self.biases[i]
 			z_values.append(z)
-			a_values.append(self.__sigmoid(z))
+			a_values.append(sigmoid(z))
 
 		""" error calculation """
-		err = np.multiply(y - a_values[-1], self.__sigmoid_prime(z_values[-1]))
+		err = np.multiply(y - a_values[-1], sigmoid_prime(z_values[-1]))
 		delta_biases[-1] = err
 		delta_weights[-1] = np.dot(a_values[-2], err.transpose())
 
 		""" back pass with error calculations """
 		for i in range(len(z_values) - 1):
 			err = np.multiply(np.dot(self.weights[-i], err), \
-					self.__sigmoid_prime(z_values[-i-2]))
+					sigmoid_prime(z_values[-i-2]))
 
 			delta_biases[-i-2] = err
 			delta_weights[-i-2] = np.dot(a_values[-i-3], err.transpose())
