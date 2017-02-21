@@ -77,8 +77,8 @@ class network:
 					d_w_total = [old + new for old, new in zip(d_w_total, d_w)]
 					d_b_total = [old + new for old, new in zip(d_b_total, d_b)]
 
-				self.weights = [old - np.multiply(learning_rate/len(data_set), total)
-								for old, total in zip(self.weights, d_w_total)]
-				self.biases = [old - np.multiply(learning_rate/len(data_set), total)
-								for old, total in zip(self.biases, d_b_total)]
+				self.weights = [old - np.multiply(learning_rate / len(data_set), 
+						total) for old, total in zip(self.weights, d_w_total)]
+				self.biases = [old - np.multiply(learning_rate / len(data_set), 
+						total) for old, total in zip(self.biases, d_b_total)]
 			np.random.shuffle(training_data)

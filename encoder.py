@@ -20,12 +20,12 @@ class encoder(data):
 		return training_set, test_set
 
 	@classmethod
-	def validate(cls, test_set, output):
+	def validate(cls, test_set, outputs):
 		num_valid = 0
 
 		for i in range(len(test_set)):
 			x, y = test_set[i]
-			if np.argmax(y) == np.argmax(outputs[i]):
+			if y == np.argmax(outputs[i]):
 				num_valid = num_valid + 1
 
 		return num_valid / len(test_set)
