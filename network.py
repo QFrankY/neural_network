@@ -44,7 +44,7 @@ class network:
 			a_values.append(self.sigmoid(z))
 
 		""" error calculation """
-		err = np.multiply(a_values[-1] - y, self.sigmoid_prime(z_values[-1]))
+		err = a_values[-1] - y
 		delta_biases[-1] = err
 		delta_weights[-1] = np.dot(err, a_values[-2].transpose())
 
@@ -77,4 +77,4 @@ class network:
 						total) for old, total in zip(self.weights, d_w_total)]
 				self.biases = [old - np.multiply(learning_rate / len(data_set), 
 						total) for old, total in zip(self.biases, d_b_total)]
-			#np.random.shuffle(training_data)
+			np.random.shuffle(training_data)
