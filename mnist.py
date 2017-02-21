@@ -34,13 +34,13 @@ class mnist(data):
 		for i in range(size):
 			y = np.zeros((10, 1))
 			y[labels[i]] = 1
-			x = np.matrix(images[i * pixels: (i + 1) * pixels]).transpose()
+			x = np.matrix(images[i * pixels: (i + 1) * pixels]).transpose()/255
 			training_set.append((x, y))
 
 		size, images, labels, pixels = cls.load_set("train-labels.idx1-ubyte",
 													"train-images.idx3-ubyte")
 		for i in range(size):
-			x = np.matrix(images[i * pixels: (i + 1) * pixels]).transpose()
+			x = np.matrix(images[i * pixels: (i + 1) * pixels]).transpose()/255
 			test_set.append((x, labels[i]))
 
 		return training_set, test_set

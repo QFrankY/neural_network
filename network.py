@@ -11,8 +11,8 @@ class network:
 		self.layers = [input_size]
 		self.layers.extend(hidden_layers)
 		self.layers.append(output_size)
-		self.biases = [np.random.rand(x, 1) for x in self.layers[1:]]
-		self.weights = [np.random.rand(x, y) for x, y in 
+		self.biases = [np.random.randn(x, 1) for x in self.layers[1:]]
+		self.weights = [np.random.randn(x, y) for x, y in 
 								zip(self.layers[1:], self.layers[0:-1])]
 
 	def sigmoid (self, z):
@@ -21,15 +21,11 @@ class network:
 	def sigmoid_prime (self, z):
 		return np.multiply(self.sigmoid(z), (1 - self.sigmoid(z)))
 
-	def export(self):
-		""" returns network variables """
-		return self.layers, self.biases, self.weights
-
 	def forwardpass(self, x):
 		""" passes numpy vector x through neural network layers """
 		activation = x
 		for i in range(len(self.layers) - 1):
-			z = np.dot(self.weights[i], activation)+ self.biases[i]
+			z = np.dot(self.weights[i], activation) + self.biases[i]
 			activation = self.sigmoid(z)
 		return activation
 
@@ -54,7 +50,7 @@ class network:
 
 		""" back pass with error calculations """
 		for i in range(1, len(z_values)):
-			err = np.multiply(np.dot(self.weights[-i].transpose(), err), \
+			err = np.multiply(np.dot(self.weights[-i].transpose(), err),
 					self.sigmoid_prime(z_values[-i-1]))
 
 			delta_biases[-i-1] = err
@@ -81,4 +77,4 @@ class network:
 						total) for old, total in zip(self.weights, d_w_total)]
 				self.biases = [old - np.multiply(learning_rate / len(data_set), 
 						total) for old, total in zip(self.biases, d_b_total)]
-			np.random.shuffle(training_data)
+			#np.random.shuffle(training_data)
