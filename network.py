@@ -21,12 +21,16 @@ class network:
 	def sigmoid_prime (self, z):
 		return np.multiply(self.sigmoid(z), (1 - self.sigmoid(z)))
 
-	def forwardpass(self, x):
+	def forwardpass(self, x, softmax=False):
 		""" passes numpy vector x through neural network layers """
 		activation = x
 		for i in range(len(self.layers) - 1):
 			z = np.dot(self.weights[i], activation) + self.biases[i]
 			activation = self.sigmoid(z)
+
+		if softmax:
+			activation = activation / np.sum(activation)
+
 		return activation
 
 	def backprop(self, x, y):
@@ -44,7 +48,7 @@ class network:
 			a_values.append(self.sigmoid(z))
 
 		""" error calculation """
-		err = a_values[-1] - y
+		err = a_values[-1] - y # Based on cross entropy
 		delta_biases[-1] = err
 		delta_weights[-1] = np.dot(err, a_values[-2].transpose())
 
